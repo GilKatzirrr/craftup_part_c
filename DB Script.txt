@@ -1,0 +1,112 @@
+//////DB Script //////
+
+//////Create DB//////
+CREATE DATABASE IF NOT EXISTS CraftUpDB;
+USE CraftUpDB;
+
+//////Create Tables///////
+
+//Users Table
+CREATE TABLE Users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fullName VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  email VARCHAR(100) UNIQUE,
+  password VARCHAR(100) NOT NULL
+);
+
+//Workshops Table 
+CREATE TABLE Workshops (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT,
+  category ENUM('baking', 'pottery', 'painting', 'photography', 'chocolate', 'jewelry', 'sports', 'other') NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+  maxParticipants INT NOT NULL,
+  createdBy INT,
+  status ENUM('active', 'cancelled') DEFAULT 'active',
+  FOREIGN KEY (createdBy) REFERENCES Users(id)
+);
+
+//Registrations (for workshops) Table
+CREATE TABLE Registrations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  userId INT,
+  workshopId INT,
+  registeredAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  fullName VARCHAR(100),
+  phone VARCHAR(20),
+  email VARCHAR(100),
+  status ENUM('registered', 'cancelled') DEFAULT 'registered',
+  FOREIGN KEY (userId) REFERENCES Users(id),
+  FOREIGN KEY (workshopId) REFERENCES Workshops(id)
+);
+
+
+//Create ContactMessages
+CREATE TABLE ContactMessages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fullName VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  subject VARCHAR(255),
+  message TEXT NOT NULL,
+  submittedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+//////Insert Values//////
+
+//Insert Value for users Table (The id is Auto) :
+INSERT INTO Users (id, fullName, phone, email, password)
+VALUES 
+(3, 'Gil Katzir', '0546716794', 'gilkat@post.bgu.ac.il', '260599Gil'),
+(4, 'Stav Priel', '0507512110', 'stavpriel111@gmail.com', 'Stav1234'),
+(6, 'Itai Feldman', '0528735513', 'Feldman3.if@gmail.com', 'Itai1234'),
+(9, 'Ofri Keinan', '0522222222', 'ofrikei@gmail.com', 'Ofri1234');
+
+
+//Insert Value for workshops Table:
+INSERT INTO Workshops (id, title, description, category, date, time, maxParticipants, createdBy, status)
+VALUES 
+(7, 'Baking Workshop', 'This workshop is perfect for anyone who loves baking and experimenting with different recipes...', 'baking', '2025-06-10', '17:00:00', 15, 3, 'active'),
+
+(8, 'Clay Sculpture Workshop', 'This workshop offers a creative and sculptural experience with clay...', 'pottery', '2025-06-15', '19:00:00', 12, 3, 'active'),
+
+(9, 'Painting Workshop', 'This workshop is great for those who enjoy painting and exploring different techniques...', 'painting', '2025-06-12', '19:00:00', 20, 3, 'active'),
+
+(13, 'basketball workshop', 'A fun and engaging basketball workshop designed for all skill levels. Participants will learn essential techniques such as ball handling, passing, shooting, and defensive play.', 'sports', '2025-06-13', '11:39:00', 2, 6, 'active'),
+
+(14, 'Making Neckless', 'Discover the art of jewelry making in a hands-on, creative workshop designed for beginners and hobbyists alike.Participants will learn basic beading, wire work, and design techniques to craft their own custom necklaces and accessories.\nLed by an experienced instructor, the session encourages self-expression and creativity in a relaxed, inspiring environment.', 'jewelry', '2025-06-27', '21:00:00', 10, 3, 'active'),
+
+(19, 'Photography Workshop', 'Join our hands-on photography workshop and take your skills to the next level! Whether you\'re a beginner or an enthusiast, this workshop will teach you the art of storytelling through images. You\'ll learn how to use your camera in manual mode.', 'photography', '2025-06-27', '15:30:00', 10, 3, 'cancelled'),
+
+(20, 'Dark Chocolate Workshop', 'Discover the rich world of dark chocolate in this hands-on workshop. Learn about the origins, tempering techniques, and flavor pairing of premium cocoa. Create your own artisan dark chocolate treats to take home and enjoy.', 'chocolate', '2025-07-31', '20:00:00', 10, 4, 'active'),
+
+(21, 'sticker-making workshop', 'Unleash your creativity in this fun and colorful sticker-making workshop. Learn how to design, print, and cut custom stickers using professional tools and materials. Perfect for personalizing notebooks, gifts, or creating your own sticker collection.', 'other', '2025-07-31', '18:00:00', 10, 4, 'active'),
+
+(22, 'Italian cooking', 'Step into the heart of Italy with this authentic Italian cooking workshop. Learn to prepare classic dishes like handmade pasta, rich sauces, and traditional desserts using fresh, seasonal ingredients. Enjoy a delicious meal together and take home the skills to recreate the magic in your own kitchen.', 'baking', '2025-07-12', '10:00:00', 5, 4, 'active'),
+
+(23, 'Wild photography workshop', 'Explore the art of photography in this interactive and inspiring workshop. Learn the fundamentals of lighting, composition, and camera settings through hands-on practice. Whether you\'re a beginner or looking to refine your skills, this session will help you capture stunning images with confidence.', 'photography', '2025-08-08', '20:10:00', 20, 4, 'active');
+
+//Insert Value for Registrations
+
+INSERT INTO Registrations (id, userId, workshopId, registeredAt, fullName, phone, email, status)
+VALUES 
+(18, 4, 9, '2025-06-11 10:56:30', 'Stav Priel, 0546716788, stavpriel111@gmail.com, 'cancelled'),
+(24, 6, 8, '2025-06-11 11:54:39', Itai Feldman, 0546716794, feld@gmail.com, 'registered'),
+(25, 6, 9, '2025-06-11 11:58:06', 'Gil Katzir', '0507512110', 'gilikatzir2@gmail.com', 'cancelled'),
+(26, 3, 13, '2025-06-11 12:52:41', 'Stav Priel', '0528735513', 'feld@gmail.com', 'cancelled'),
+(27, 4, 19, '2025-06-17 13:30:34', 'Ofri Keinan', '0546716788', 'ofrikei@gmail.com', 'cancelled'),
+(28, 4, 14, '2025-06-19 18:08:57', 'Stav Priel', '0522222222', 'stavpriel111@gmail.com', 'registered'),
+(29, 3, 23, '2025-06-19 18:11:36', 'Gil Katzir', '0546716794', 'gilikatzir2@gmail.com', 'registered');
+
+
+
+//Insert Value for ContactMessages
+INSERT INTO ContactMessages (id, fullName, email, phone, subject, message, submittedAt)
+VALUES 
+(1, 'Gil Katzir', 'gilkat@post.bgu.ac.il', '0546716794', 'Problem', 'I have a problem!!!!!!!!!!', '2025-06-17 20:29:59'),
+(2, 'Gil Katzir', 'gilkat@post.bgu.ac.il', '0546716794', 'Problem', 'I have a problem. call me back', '2025-06-20 19:50:33'),
+(3, 'Stav Priel', 'stavpriel111@gmail.com', '0526759485', 'Problem', 'Hey, I wanna ask a question, call me back', '2025-06-22 11:54:59');
